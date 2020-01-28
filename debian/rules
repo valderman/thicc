@@ -2,7 +2,3 @@
 
 %:
 	dh $@
-
-override_dh_fixperms:
-        dh_fixperms
-        chmod 700 /etc/thicc/keys
