@@ -3,7 +3,7 @@ module Thicc.Config
   ( Config, PortNumber, AppName, ApiKey
   , defaultConfig
   , composeFileDirectory, availableFileDirectory, keyFileDirectory
-  , apiKeyFile, composeFile, availableFile, relativeAvailableFile
+  , apiKeyFile, composeFile, availableFile, relativeAvailableFile, configFile
     -- * Configuration options
   , pruneAfterUpdate, daemonize, restPort, restUser, configDirectory
   , dockerBinary, composeBinary, restBinary
@@ -81,7 +81,7 @@ data Config = Config
   } deriving Generic
 
 instance Configurable Config where
-  type ExcludedFields Config = '["configDirectory"]
+  type ExcludedFields Config = '["configDirectory", "restBinary", "privilegedSocket"]
   defaultConfig = Config
     { pruneAfterUpdate = True
     , daemonize        = False
@@ -110,6 +110,11 @@ composeFileDirectory cfg = configDirectory cfg </> "apps-enabled"
 keyFileDirectory :: Config -> FilePath
 keyFileDirectory cfg = configDirectory cfg </> "keys"
 
+-- | File to read additional configuration from.
+configFile :: Config -> FilePath
+configFile cfg = configDirectory cfg </> "config"
+
+-- | API key file for the given app.
 apiKeyFile :: Config -> String -> FilePath
 apiKeyFile cfg f = keyFileDirectory cfg </> f <.> "key"
 

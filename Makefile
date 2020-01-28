@@ -1,6 +1,7 @@
 .PHONY: build deb dummy
 
 dummy:
+	@echo "Use 'cabal build' instead."
 
 build:
 	rm -r _build ; true

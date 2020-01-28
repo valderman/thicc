@@ -2,5 +2,6 @@ usr/bin
 lib/systemd/system
 usr/share/doc/thicc
 etc/thicc
+etc/thicc/keys
 etc/thicc/apps-available
 etc/thicc/apps-enabled

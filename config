@@ -1,0 +1,18 @@
+# Should thicc run 'docker image prune' after updates?
+# pruneAfterUpdate = yes
+
+# Should thicc start daemonized?
+# Overridden if started using systemd.
+# daemonize = yes
+
+# Default user to run the REST API under.
+# restUser = thicc-rest
+
+# What port should the REST API run on?
+# restPort = 12321
+
+# Path to the docker binary.
+# dockerBinary = /usr/bin/docker
+
+# Path to the docker-compose binary.
+# composeBinary = /usr/bin/docker-compose

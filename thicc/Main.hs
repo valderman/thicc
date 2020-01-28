@@ -85,7 +85,7 @@ main = do
   unless (null errors) $ do
     mapM_ (hPutStrLn stderr) errors
     exitFailure
-  cfg' <- readConfigFileWith cfg (configDirectory cfg)
+  cfg' <- readConfigFileWith cfg (configFile cfg)
   case choose actions nonopts of
     Left err -> hPutStrLn stderr err >> exitFailure
     Right go -> go (mkCfg cfg')
