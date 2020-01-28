@@ -1,0 +1,4 @@
+#!/bin/sh
+addgroup --system thicc-rest 2> /dev/null > /dev/null ; true
+adduser --system thicc-rest --home /etc/thicc --ingroup thicc-rest 2> /dev/null > /dev/null ; true
+deb-systemd-helper enable thicc.service

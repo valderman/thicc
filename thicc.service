@@ -1,0 +1,15 @@
+[Unit]
+Description=thicc docker update daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/thicc -d start
+Type=oneshot
+RemainAfterExit=yes
+ExecStop=/usr/bin/thicc stop
+User=root
+Group=root
+WorkingDirectory=/etc/thicc
+
+[Install]
+WantedBy=multi-user.target

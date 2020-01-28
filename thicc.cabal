@@ -1,0 +1,83 @@
+cabal-version:       >=1.10
+
+name:                thicc
+version:             0.1.0.0
+synopsis:            Tiny HTTP Interface for (Docker) Compose Containers
+description:         Daemon for deploying and upgrading containers upon callback
+                     from Docker Hub or similar services, designed for simplicity
+                     and security.
+-- bug-reports:
+license:             AGPL-3
+author:              Anton Ekblad
+maintainer:          anton@ekblad.cc
+-- copyright:
+-- category:
+build-type:          Simple
+
+library
+  exposed-modules:
+    Thicc
+    Thicc.Messages
+  other-modules:
+    Thicc.Actions
+    Thicc.ApiKeys
+    Thicc.Config
+    Thicc.Daemon
+    Thicc.Daemonize
+    Thicc.Monad
+    Thicc.Pipes
+    Thicc.Socket
+  build-depends:
+    base       >=4.12 && <5,
+    bytestring >=0.10 && <0.11,
+    directory  >=1.1  && <1.4,
+    entropy    >=0.4  && <0.5,
+    filepath   >=1.3  && <1.5,
+    network    >=3.1  && <3.2,
+    process    >=1.1  && <1.7,
+    tini       >=0.1  && <0.2,
+    unix       >=2.7  && <2.8
+  hs-source-dirs:
+    src
+  ghc-options:
+    -Wall
+  default-language:
+    Haskell2010
+
+executable thicc-rest
+  main-is:
+    Main.hs
+  build-depends:
+    aeson           >=1.4  && <1.5,
+    base            >=4.12 && <5,
+    http-client     >=0.6  && <0.7,
+    http-client-tls >=0.3  && <0.4,
+    http-media      >=0.8  && <0.9,
+    http-types      >=0.12 && <0.13,
+    servant         >=0.16 && <0.17,
+    servant-server  >=0.16 && <0.17,
+    warp            >=3.3  && <3.4,
+    thicc
+  hs-source-dirs:
+    thicc-rest
+  default-language:
+    Haskell2010
+  ghc-options:
+    -threaded
+
+executable thicc
+  main-is:
+    Main.hs
+  other-modules:
+    Actions
+  build-depends:
+    base      >=4.12 && <5,
+    directory >=1.1  && <1.4,
+    thicc,
+    tini      >=0.1  && <0.2
+  hs-source-dirs:
+    thicc
+  default-language:
+    Haskell2010
+  ghc-options:
+    -threaded

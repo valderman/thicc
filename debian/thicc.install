@@ -1,0 +1,5 @@
+_build/thicc      /usr/bin/
+_build/thicc-rest /usr/bin/
+config            /etc/thicc/
+thicc.service     /lib/systemd/system/
+README.md         /usr/share/doc/thicc/
