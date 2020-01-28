@@ -1,0 +1,9 @@
+.*
+*.log
+*.hi
+*.o
+/_build
+/dist-newstyle
+/debian/files
+/debian/thicc.substvars
+/debian/thicc
