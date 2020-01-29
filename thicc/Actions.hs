@@ -42,5 +42,5 @@ url cfg host app = do
   response <- sendPriv (privilegedSocket cfg) (URL app)
   case response of
     OK Nothing  -> hPutStrLn stderr "BUG: got empty response" >> exitFailure
-    OK (Just u) -> putStrLn (host ++ u)
+    OK (Just u) -> putStrLn ("http://" ++ host ++ u)
     Fail msg    -> hPutStrLn stderr msg >> exitFailure
