@@ -117,7 +117,7 @@ thiccDaemon r w = do
       io $ putMVar lock pid
       case result of
         Just res -> return res
-        _        -> error "BUG: handleUpdate exploded!"
+        _        -> return UpdateFailed
 
     handleUpdate app key = do
       exists <- validateEnabledApp app
