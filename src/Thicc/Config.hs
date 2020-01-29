@@ -120,7 +120,7 @@ apiKeyFile cfg f = keyFileDirectory cfg </> f <.> "key"
 
 -- | Path to the compose file for the given app, if enabled.
 composeFile :: Config -> String -> FilePath
-composeFile cfg f = composeFileDirectory cfg </> f <.> "yml"
+composeFile cfg f = composeFileDirectory cfg </> f </> "docker-compose.yml"
 
 -- | Path to the compose file for the given, not necessarily enabled, app.
 availableFile :: Config -> String -> FilePath
@@ -129,4 +129,4 @@ availableFile cfg f = availableFileDirectory cfg </> f <.> "yml"
 -- | Path to the compose file for the given app in the available directory,
 --   relative to the enabled directory.
 relativeAvailableFile :: String -> FilePath
-relativeAvailableFile app = ".." </> "apps-available" </> app <.> "yml"
+relativeAvailableFile app = ".." </> ".." </> "apps-available" </> app <.> "yml"

@@ -6,6 +6,7 @@ module Thicc.Actions
   ) where
 import Control.Monad (when, unless, void)
 import System.Directory
+import System.FilePath (takeDirectory)
 import System.Posix.Files
 import System.Posix.User
 import Thicc.Config
@@ -67,6 +68,7 @@ disable app = do
   when exists $ do
     down app
     io $ removeFile file
+    io $ removeDirectory (takeDirectory file)
 
 enable :: AppName -> ThiccM ()
 enable app = do
@@ -74,5 +76,6 @@ enable app = do
   target <- flip composeFile app <$> getConfig
   exists <- io $ doesFileExist target
   unless exists $ do
+    io $ createDirectoryIfMissing True (takeDirectory target)
     io $ createSymbolicLink source target
     up app
