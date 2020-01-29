@@ -27,21 +27,21 @@ actions =
   , ("stop",           ([], const stop,
      "Stops the thicc daemon."))
   , ("add",            (["appname", "file"], \[app, f] cfg -> add cfg app f,
-     "Adds docker-compose file <file> to the daemon under the name <appname>."))
+     "Adds docker-compose file <file> to the daemon as <appname>."))
   , ("remove",         (["appname"], \[app] cfg -> remove cfg app,
      "Removes the application by the name <appname> from thicc."))
   , ("enable",         (["appname"], \[app] cfg -> enable cfg app,
      "Starts the application <appname> and monitors it for updates."))
   , ("disable",        (["appname"], \[app] cfg -> disable cfg app,
      "Stops the application <appname> and stops monitoring it for updates."))
-  , ("url",            (["appname"], \[app] cfg -> url cfg app,
-     "Prints the callback URL for application <appname>."))
+  , ("url",            (["appname", "host"], \[app, h] cfg -> url cfg h app,
+     "Prints the callback URL for <appname> when served from <host>."))
   , ("list-enabled",   ([], const listEnabled,
      "Lists all enabled applications."))
   , ("list-available", ([], const listAvailable,
      "Lists all available applications."))
   , ("update",         (["appname"], \[app] cfg -> update cfg app,
-     "Forcibly update the application <appname>."))
+     "Forcibly update <appname>."))
   , ("help",           ([], \_ _ -> printHelp,
      "Print this message."))
   ]

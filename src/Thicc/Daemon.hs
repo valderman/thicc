@@ -140,7 +140,7 @@ update key = do
 mkUrl :: AppName -> ApiKey -> ThiccM String
 mkUrl app key = do
   port <- show . restPort <$> getConfig
-  return $ "<host>:" ++ port ++ "/c/" ++ app ++ "/" ++ key
+  return $ ":" ++ port ++ "/c/" ++ app ++ "/" ++ key
 
 getComposeApps :: ThiccM [AppName]
 getComposeApps = do

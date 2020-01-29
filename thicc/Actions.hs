@@ -29,7 +29,7 @@ disable :: Config -> String -> IO ()
 disable cfg = send cfg . Disable
 
 listEnabled :: Config -> IO ()
-listEnabled = flip send ListEnabled 
+listEnabled = flip send ListEnabled
 
 listAvailable :: Config -> IO ()
 listAvailable = flip send ListAvailable
@@ -37,5 +37,10 @@ listAvailable = flip send ListAvailable
 update :: Config -> String -> IO ()
 update cfg = send cfg . PrivUpdate
 
-url :: Config -> String -> IO ()
-url cfg = send cfg . URL
+url :: Config -> String -> String -> IO ()
+url cfg host app = do
+  response <- sendPriv (privilegedSocket cfg) (URL app)
+  case response of
+    OK Nothing  -> hPutStrLn stderr "BUG: got empty response" >> exitFailure
+    OK (Just u) -> putStrLn (host ++ u)
+    Fail msg    -> hPutStrLn stderr msg >> exitFailure
