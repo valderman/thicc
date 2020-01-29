@@ -18,7 +18,11 @@ thiccDaemon r w = do
     update_lock <- io newEmptyMVar
     updater_pid <- forkIO $ serve (handle update_lock) r w
     io $ putMVar update_lock updater_pid
-    handlePrivSocket (handlePriv update_lock)
+    handlePrivSocket $ \request -> do
+      result <- try $ handlePriv update_lock request
+      case result of
+        Just res -> return res
+        _        -> return (True, Fail "command failed")
   where
     handlePriv lock Quit             = handleQuit lock
     handlePriv _    (Add app file)   = handleAdd app file
