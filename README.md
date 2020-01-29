@@ -40,7 +40,7 @@ authenticate with the host beforehand.
 
 To add an application:
 
-```shell
+```
 sudo thicc add my-app my-app/docker-compose.yaml
 ```
 
@@ -49,7 +49,7 @@ to thicc under the name `my-app`.
 
 Then, you need to enable your newly added app:
 
-```shell
+```
 sudo thicc enable my-app
 ```
 
@@ -60,7 +60,7 @@ To add update-on-webhook functionality to your application, which is probably
 what you're here for, you need to obtain the webhook URL for your app.
 This can be accomplished using the `thicc url` command:
 
-```shell
+```
 sudo thicc url my-app example.com
 ```
 
