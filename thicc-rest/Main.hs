@@ -1,17 +1,20 @@
 {-# LANGUAGE TypeOperators, DataKinds, OverloadedStrings #-}
 module Main where
 import Control.Concurrent (forkIO)
+import Control.Monad (void)
 import Control.Monad.IO.Class (liftIO)
 import Data.Aeson hiding (Success, Error)
 import Data.String (fromString)
 import Network.Wai.Handler.Warp (run)
-import Network.HTTP.Client hiding (Proxy)
-import Network.HTTP.Client.TLS
-import Servant
-import Servant.Server
+import Network.HTTP.Client
+  ( RequestBody (..)
+  , requestBody, method, httpLbs
+  )
+import Network.HTTP.Client.TLS (getGlobalManager)
+import Servant (Server, ReqBody, Post, JSON, Capture, (:>), Proxy (..), serve)
 import System.Environment (getArgs)
-import Thicc
-import Thicc.Messages
+import Thicc (awaitStdIn, sendStdOut)
+import Thicc.Messages (ThiccResponse, ThiccRequest (..))
 
 newtype CallbackUrl = CallbackUrl { unCallbackUrl :: String }
 
@@ -51,22 +54,21 @@ type DockerCallback
 dockerCallback :: Server DockerCallback
 dockerCallback app key (CallbackUrl url) = liftIO $ do
   sendStdOut (Update app key)
-  forkIO $ awaitStdIn >>= respond url
-  return ()
+  void $ forkIO $ awaitStdIn >>= respond url
 
 respond :: String -> ThiccResponse -> IO ()
-respond url resp = do
+respond url _ = do
   mgr <- getGlobalManager
   let req = (fromString url)
         { method = "POST"
         , requestBody = RequestBodyLBS $ encode $ HookResponse
           { result = Success
           , description = "Update succeeded!"
-          , context = "CI by thicc"
+          , context = "thicc CI"
           , targetUrl = Nothing
           }
         }
-  response <- httpLbs req mgr
+  void $ httpLbs req mgr
   return ()
 
 main :: IO ()

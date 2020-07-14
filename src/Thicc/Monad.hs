@@ -6,7 +6,6 @@ module Thicc.Monad
   ) where
 import qualified Control.Concurrent as CC
 import qualified Control.Exception as C
-import Data.Typeable
 import System.Exit (ExitCode (..))
 import System.Posix.Process
 import System.Posix.Types

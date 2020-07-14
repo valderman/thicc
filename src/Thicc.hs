@@ -4,7 +4,7 @@ module Thicc
   , sendStdOut, awaitStdIn, sendPriv
   ) where
 import Control.Concurrent (killThread)
-import Control.Monad (when)
+import Control.Monad (void, when)
 import Data.IORef
 import Data.Maybe (isNothing)
 import System.Directory
@@ -40,7 +40,7 @@ watchProcess process_handle (r2w, w2d) (d2w, w2r) = do
   r2d <- forkIO $ serve pure r2w w2d
   d2r <- forkIO $ serve pure d2w w2r
   io $ do
-    waitForProcess process_handle
+    void $ waitForProcess process_handle
     killThread r2d
     killThread d2r
 
@@ -55,7 +55,7 @@ restartProcess terminate_if_requested set_rest_pid output input = do
   mask $ \restore -> do
     (stdi, stdo, proc_handle) <- runWithPipes (restBinary cfg) [show (restPort cfg)]
     set_rest_pid proc_handle
-    try $ restore $ watchProcess proc_handle (stdo, output) (input, stdi)
+    void $ try $ restore $ watchProcess proc_handle (stdo, output) (input, stdi)
   terminate_if_requested
   restartProcess terminate_if_requested set_rest_pid output input
 
@@ -115,7 +115,8 @@ startThicc = do
   _ <- io $ setFileCreationMask fileCreationMask
   _ <- try $ thiccDaemon from_watchdog to_watchdog
   io $ signalProcess sigHUP watchdog_pid
-  _ <- try $ io $ removeDirectory (takeDirectory $ privilegedSocket cfg)
+  cfg <- getConfig
+  void $ try $ io $ removeDirectory (takeDirectory $ privilegedSocket cfg)
 
 thicc :: Config -> IO ()
 thicc cfg = flip runThiccM cfg $ do

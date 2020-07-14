@@ -9,9 +9,9 @@ send :: Config -> PrivRequest -> IO ()
 send cfg msg = do
   response <- sendPriv (privilegedSocket cfg) msg
   case response of
-    OK Nothing    -> return ()
-    OK (Just msg) -> putStrLn msg
-    Fail msg      -> hPutStrLn stderr msg >> exitFailure
+    OK Nothing     -> return ()
+    OK (Just msg') -> putStrLn msg'
+    Fail msg'      -> hPutStrLn stderr msg' >> exitFailure
 
 stop :: Config -> IO ()
 stop = flip send Quit

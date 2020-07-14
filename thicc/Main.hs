@@ -63,7 +63,7 @@ choose acts (x:xs) =
       | length xs == length args -> Right (action xs)
       | otherwise                -> Left $ wrongNumberOfArgs x args
     Nothing                      -> Left $ unwords ["no such action:", x]
-choose acts [] =
+choose _ [] =
   Left "no action specified; try 'help'"
 
 wrongNumberOfArgs :: String -> [String] -> String
