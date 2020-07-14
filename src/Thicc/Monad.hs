@@ -1,10 +1,13 @@
+{-# LANGUAGE RankNTypes #-}
 module Thicc.Monad
   ( ThiccM, runThiccM
   , docker, compose, getConfig, try, io, fork, forkIO
-  , forever
+  , forever, mask
   ) where
 import qualified Control.Concurrent as CC
 import qualified Control.Exception as C
+import Data.Typeable
+import System.Exit (ExitCode (..))
 import System.Posix.Process
 import System.Posix.Types
 import System.Process
@@ -58,10 +61,15 @@ forkIO (ThiccM m) = ThiccM (CC.forkIO . m)
 -- | Run the given computation, returning @Nothing@ if an exception occurred.
 try :: ThiccM a -> ThiccM (Maybe a)
 try (ThiccM m) = ThiccM $ \cfg -> do
-  result <- C.try (m cfg)
-  case result of
-    Right x                  -> return (Just x)
-    Left (C.SomeException _) -> return Nothing
+  (Just <$> m cfg) `C.catches`
+    [ C.Handler (\e -> C.throw (e :: ExitCode))
+    , C.Handler (\(C.SomeException e) -> print e >> return Nothing)
+    ]
+
+mask :: ((forall a. ThiccM a -> ThiccM a) -> ThiccM b) -> ThiccM b
+mask f = ThiccM $ \cfg -> do
+  C.mask $ \outer_restore -> do
+    runThiccM (f $ \(ThiccM m) -> io $ outer_restore (m cfg)) cfg
 
 forever :: Monad m => m a -> m b
 forever m = m >> forever m

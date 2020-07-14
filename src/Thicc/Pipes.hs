@@ -43,12 +43,16 @@ serve handler r w = do
   send w response
   serve handler r w
 
-runWithPipes :: FilePath -> [String] -> WritePipe a -> ReadPipe b -> ThiccM ProcessHandle
-runWithPipes bin args (WP stdo) (RP stdi) = do
-    (_, _, _, ph) <- io $ createProcess p
-    return ph
+runWithPipes :: FilePath -> [String] -> ThiccM (WritePipe a, ReadPipe b, ProcessHandle)
+runWithPipes bin args = do
+    (stdi, stdo, _, ph) <- io $ createProcess p
+    return
+      ( maybe (error "unreachable") WP stdi
+      , maybe (error "unreachable") RP stdo
+      , ph
+      )
   where
     p = (proc bin args)
-      { std_in = UseHandle stdi
-      , std_out = UseHandle stdo
+      { std_in = CreatePipe
+      , std_out = CreatePipe
       }
