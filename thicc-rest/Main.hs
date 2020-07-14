@@ -3,13 +3,10 @@ module Main where
 import Control.Concurrent (forkIO)
 import Control.Monad (void)
 import Control.Monad.IO.Class (liftIO)
-import Data.Aeson hiding (Success, Error)
+import Data.Aeson (FromJSON (..), ToJSON (..), (.:), (.=), object, withObject, encode)
 import Data.String (fromString)
 import Network.Wai.Handler.Warp (run)
-import Network.HTTP.Client
-  ( RequestBody (..)
-  , requestBody, method, httpLbs
-  )
+import Network.HTTP.Client (RequestBody (..), requestBody, method, httpLbs)
 import Network.HTTP.Client.TLS (getGlobalManager)
 import Servant (Server, ReqBody, Post, JSON, Capture, (:>), Proxy (..), serve)
 import System.Environment (getArgs)
