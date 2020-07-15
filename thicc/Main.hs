@@ -1,20 +1,24 @@
 module Main where
-import Control.Monad (unless)
+import Control.Monad (unless, (<=<))
 import Data.Tini.Configurable
 import System.Console.GetOpt
+import System.Directory (makeAbsolute)
 import System.Environment
 import System.Exit
 import System.IO
 import Thicc
 import Actions
 
-opts :: [OptDescr (Config -> Config)]
+opts :: [OptDescr (Config -> IO Config)]
 opts =
-  [ Option "c" ["config"] (ReqArg (\s c -> c { configDirectory = s }) "DIR")
+  [ Option "c" ["config"]
+    (ReqArg (\s c -> makeAbsolute s >>= \d -> pure c { configDirectory = d }) "DIR")
     "Look for thicc config files in DIR."
-  , Option "f" ["foreground"] (NoArg $ \c -> c { daemonize = False } )
+  , Option "f" ["foreground"]
+    (NoArg $ \c -> pure c { daemonize = False } )
     "Run the thicc server in the foreground (the default)."
-  , Option "d" ["daemon"] (NoArg $ \c -> c { daemonize = True } )
+  , Option "d" ["daemon"]
+    (NoArg $ \c -> pure c { daemonize = True } )
     "Run the thicc server as a daemon."
   ]
 
@@ -55,6 +59,8 @@ printHelp = do
         numTabs = (32 - length prefix - 1) `quot` 8
         tabs = replicate numTabs '\t'
     putStrLn $ prefix ++ tabs ++ doc
+  putStrLn $ usageInfo "\nAvailable options:" opts
+  
 
 choose :: [Action] -> [String] -> Either String (Config -> IO ())
 choose acts (x:xs) =
@@ -80,12 +86,12 @@ main :: IO ()
 main = do
   args <- getArgs
   let (cfgs, nonopts, errors) = getOpt Permute opts args
-      mkCfg = foldl (.) id cfgs
-      cfg = mkCfg defaultConfig
+      mkCfg = foldl (<=<) pure cfgs
+  cfg <- mkCfg defaultConfig
   unless (null errors) $ do
     mapM_ (hPutStrLn stderr) errors
     exitFailure
   cfg' <- readConfigFileWith cfg (configFile cfg)
   case choose actions nonopts of
     Left err -> hPutStrLn stderr err >> exitFailure
-    Right go -> go (mkCfg cfg')
+    Right go -> mkCfg cfg' >>= go
