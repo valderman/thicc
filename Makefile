@@ -1,4 +1,7 @@
 .PHONY: build deb dummy
+DEBDIR = _deb
+DEBUILDDIR = $(DEBDIR)/build
+PACKAGEFILES = _build debian README.md config thicc.service
 
 dummy:
 	@echo "Use 'cabal build' instead."
@@ -10,5 +13,9 @@ build:
 	strip -s _build/*
 
 deb: build
-	cp -f LICENSE debian/copyright
-	debuild -us -uc -b
+	mkdir -p $(DEBUILDDIR)
+	cp -rf $(PACKAGEFILES) $(DEBUILDDIR)
+	cp -f LICENSE $(DEBUILDDIR)/debian/copyright
+	cd $(DEBUILDDIR) && debuild -us -uc -b
+	mv $(DEBDIR)/*.deb ./
+	rm -r $(DEBDIR)
