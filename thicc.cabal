@@ -1,7 +1,7 @@
 cabal-version:       >=1.10
 
 name:                thicc
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Tiny HTTP Interface for (Docker) Compose Containers
 description:         Daemon for deploying and upgrading containers upon callback
                      from Docker Hub or similar services, designed for simplicity

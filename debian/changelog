@@ -1,4 +1,11 @@
-thicc (0.1-1) UNRELEASED; urgency=medium
+thicc (0.1.0.1-1) unstable; urgency=medium
+
+  * Fix REST service watchdog.
+  * Ensure config paths are always absolute.
+
+ -- Anton Ekblad <anton@ekblad.cc>  Wed, 15 Jul 2020 02:52:22 +0200
+
+thicc (0.1-1) unstable; urgency=medium
 
   * Initial release.
 
